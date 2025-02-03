@@ -8,7 +8,6 @@ function App() {
   return (
     <div className="wrapper">
       <Header />
-      <Header />
       <div className="content">
         <div className="container">
           <div className="content__top">
