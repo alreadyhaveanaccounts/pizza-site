@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-
-export const PizzaBlock = ({ pizzaName }) => {
+export const PizzaBlock = ({ title, price, size }) => {
   const [counter, setCounter] = useState(0);
+  const [activeSize, setActiveSize] = useState("0");
+  console.log(size);
   return (
     <div className="pizza-block">
       <img
@@ -9,19 +10,20 @@ export const PizzaBlock = ({ pizzaName }) => {
         src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
         alt="Pizza"
       />
-      <h4 className="pizza-block__title">{pizzaName}</h4>
+      <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
           <li className="active">тонкое</li>
           <li>традиционное</li>
         </ul>
         <ul>
-          <li className="active">26 см.</li>
-          <li>30 см.</li>s<li>40 см.</li>
+          {size.map((size) => (
+            <li onClick={() => setActiveSize(size)}>{size} см.</li>
+          ))}
         </ul>
       </div>
       <div className="pizza-block__bottom">
-        <div className="pizza-block__price">от 395 ₽</div>
+        <div className="pizza-block__price">от {price} ₽</div>
         <button
           onClick={() => setCounter(counter + 1)}
           className="button button--outline button--add"
