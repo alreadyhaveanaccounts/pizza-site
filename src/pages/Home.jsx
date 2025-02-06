@@ -16,6 +16,7 @@ export default function Home() {
         setPizzas(pizzaArr);
         setIsLoading(false);
       });
+    window.scrollTo(0, 0);
   }, []);
   return (
     <div className="container">
