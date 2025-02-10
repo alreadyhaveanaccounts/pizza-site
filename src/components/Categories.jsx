@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { use } from "react";
+import React from "react";
 
 export const Categories = ({ categoryId, onClickChangeCategory }) => {
   const types = [

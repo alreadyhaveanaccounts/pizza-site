@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink, Link } from "react-router";
+import Search from "./Search/Search";
 
-export const Header = () => {
+export const Header = ({ searchValue, setSearchValue }) => {
   return (
     <div className="header">
       <div className="container">
@@ -14,6 +15,7 @@ export const Header = () => {
             </div>
           </div>
         </Link>
+        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
 
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">

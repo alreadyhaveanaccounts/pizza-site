@@ -1,0 +1,50 @@
+.input {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 12px 40px;
+  width: 300px;
+  border-radius: 12px;
+  font-size: 16px;
+  left: -120px;
+  transition: all 0.15s ease-in-out;
+
+  &:focus {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 400px;
+  }
+}
+.container {
+  display: flex;
+  position: relative;
+}
+.SearchIcon {
+  width: 21px;
+  height: 21px;
+  opacity: 0.4;
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  top: 13px;
+}
+.CloseIcon {
+  width: 21px;
+  height: 21px;
+  opacity: 0.4;
+  position: absolute;
+  z-index: 1;
+  right: 14px;
+  top: 13px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+.CloseIconZero {
+  width: 21px;
+  height: 21px;
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+  right: 14px;
+  top: 13px;
+}

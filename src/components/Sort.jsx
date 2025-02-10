@@ -31,6 +31,7 @@ export const Sort = ({
             transform:
               sortDirection === "desc" ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 0.3s ease",
+            cursor: "pointer",
           }}
         >
           <path
