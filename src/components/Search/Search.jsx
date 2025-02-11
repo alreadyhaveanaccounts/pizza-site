@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import cls from "./Search.module.scss";
+import { SearchContext } from "../../App";
 
-export default function Search({ searchValue, setSearchValue }) {
+export default function Search() {
+  //3.Используем контекст и деструктурируем "пропсы". Аргументом передаём созданный и импортированный контекст
+  const { searchValue, setSearchValue } = useContext(SearchContext);
   return (
     <div className={cls.container}>
       <img
