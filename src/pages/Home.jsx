@@ -22,7 +22,7 @@ export default function Home() {
     setIsLoading(true);
     // Вариант для поиска пицц через Бек. Сразу в запрос на бек вставляем search который берем из управляемого инпута
     fetch(
-      `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${currentPage}&limit=4${
+      `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${currentPage}&limit=4&${
         categoryId ? `category=${categoryId}` : ``
       }&sortBy=${
         sortedTypes[sortId].sortBy
