@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Categories } from "../components/Categories";
 import { Sort } from "../components/Sort";
 import { PizzaBlock } from "../components/PizzaBlock";
@@ -13,36 +13,67 @@ import {
   setSortId,
   setSortDirection,
   setPageCurrent,
+  setFilters,
 } from "../redux/slices/filterSlice";
 import axios from "axios";
+import qs from "qs";
+import { useNavigate } from "react-router";
 
 export default function Home() {
   const dispatch = useDispatch();
-  //useSelector - это слушатель состояния, он следит за ним и перерисовывет компонент когда состояние изменяется
+  const navigate = useNavigate();
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
+  //useSelector - это слушатель состояния, он следит за ним и перерисовывает компонент когда состояние изменяется
   const { categoryId, sortId, sortDirection, pageCurrent } = useSelector(
     (state) => state.filter
   );
-
   const { searchValue } = useContext(SearchContext);
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const search = searchValue ? searchValue : "";
 
+  //этим хуком получаем данные из юрл и диспатчим в редакс, который меняет состояние через экшн setFilters, и при обновлении страницы у нас загружаются старые параметры сортировки/фильтрации и тд. При загрузке страницы Redux берет данные из URL (useEffect с qs.parse).При изменении фильтров Redux обновляет URL (useEffect с navigate).Таким образом, при обновлении страницы фильтры загружаются из URL, а после изменений записываются обратно.
+
+  // Весь процесс работает так:
+  // Пользователь заходит на страницу первый раз - первый хук проверяет URL и, если находит параметры, устанавливает их в Redux
+  // Когда пользователь меняет фильтры (например, выбирает категорию):
+  // Действие отправляется в Redux для обновления состояния
+  // Второй хук замечает изменение параметров
+  // Формируется новая строка URL с обновленными параметрами
+  // URL обновляется, но страница не перезагружается
+  // Если пользователь обновляет страницу, процесс начинается заново с шага 1
+  // A: если был первый рендер - то проверяем юрл параметры и сохраняем в редаксе
   useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      dispatch(
+        setFilters({
+          ...params,
+        })
+      );
+      isSearch.current = true;
+    }
+  }, []);
+
+  //этим хуком приводим к строке и вставляем в юрл наш запрос на бек, и чтобы юрл рендерился при изменении параметров в скобках
+  //A: если изменили параметры и был первый рендер
+  useEffect(() => {
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sortId,
+        categoryId,
+        pageCurrent,
+        sortDirection,
+      });
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
+  }, [categoryId, sortId, pageCurrent, sortDirection]);
+
+  const fetchPizza = () => {
     setIsLoading(true);
     // Вариант для поиска пицц через Бек. Сразу в запрос на бек вставляем search который берем из управляемого инпута
-    // fetch(
-    //   `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${currentPage}&limit=4&${
-    //     categoryId ? `category=${categoryId}` : ``
-    //   }&sortBy=${
-    //     sortedTypes[sortId].sortBy
-    //   }&order=${sortDirection}&search=${search}`
-    // )
-    //   .then((res) => res.json())
-    //   .then((pizzaArr) => {
-    //     setPizzas(Array.isArray(pizzaArr) ? pizzaArr : []);
-    //     setIsLoading(false);
-    //   });
     axios
       .get(
         `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${pageCurrent}&limit=4&${
@@ -55,7 +86,14 @@ export default function Home() {
         setPizzas(res.data);
         setIsLoading(false);
       });
+  };
+  // Если был первый рендер - то запрашиваем пиццы
+  useEffect(() => {
     window.scrollTo(0, 0);
+    if (!isSearch.current) {
+      fetchPizza();
+    }
+    isSearch.current = false;
   }, [categoryId, sortId, sortDirection, searchValue, pageCurrent]);
 
   const pizzaList = pizzas
