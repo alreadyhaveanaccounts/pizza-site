@@ -1,8 +1,7 @@
 import React from "react";
 import ReactPaginate from "react-paginate";
 import cls from "./Pagination.module.scss";
-
-export default function Pagination({ changeCurrentPage }) {
+export default function Pagination({ onClickChangePagination }) {
   return (
     <>
       <ReactPaginate
@@ -10,8 +9,7 @@ export default function Pagination({ changeCurrentPage }) {
         breakLabel="..."
         nextLabel=">"
         onPageChange={(e) => {
-          console.log(e);
-          changeCurrentPage(e.selected + 1);
+          onClickChangePagination(e.selected + 1);
         }}
         pageRangeDisplayed={4}
         pageCount={3}

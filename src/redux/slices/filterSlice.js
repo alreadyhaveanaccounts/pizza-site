@@ -4,6 +4,7 @@ const initialState = {
   categoryId: 0,
   sortId: 0,
   sortDirection: "desc",
+  pageCurrent: 1,
 };
 
 const filterSlice = createSlice({
@@ -16,12 +17,15 @@ const filterSlice = createSlice({
     setSortId(state, action) {
       state.sortId = action.payload;
     },
-    setSortDirection(state) {
-      state.sortDirection = state.sortDirection === "desc" ? "asc" : "desc";
+    setSortDirection(state, action) {
+      state.sortDirection = action.payload;
+    },
+    setPageCurrent(state, action) {
+      state.pageCurrent = action.payload;
     },
   },
 });
 
-export const { setCategoryId, setSortId, setSortDirection } =
+export const { setCategoryId, setSortId, setSortDirection, setPageCurrent } =
   filterSlice.actions;
 export default filterSlice.reducer;

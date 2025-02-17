@@ -12,46 +12,51 @@ import {
   setCategoryId,
   setSortId,
   setSortDirection,
+  setPageCurrent,
 } from "../redux/slices/filterSlice";
+import axios from "axios";
 
 export default function Home() {
   const dispatch = useDispatch();
+  //useSelector - это слушатель состояния, он следит за ним и перерисовывет компонент когда состояние изменяется
+  const { categoryId, sortId, sortDirection, pageCurrent } = useSelector(
+    (state) => state.filter
+  );
 
-  const categoryId = useSelector((state) => state.filter.categoryId);
-  const sortId = useSelector((state) => state.filter.sortId);
-  const sortDirection = useSelector((state) => state.filter.sortDirection);
   const { searchValue } = useContext(SearchContext);
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const search = searchValue ? searchValue : "";
-  const onClickChangeCategory = (id) => {
-    dispatch(setCategoryId(id));
-  };
-  const onClickChangeSort = (id) => {
-    dispatch(setSortId(id));
-  };
-  const onClickChangeSortDirection = () => {
-    dispatch(setSortDirection());
-  };
 
   useEffect(() => {
     setIsLoading(true);
     // Вариант для поиска пицц через Бек. Сразу в запрос на бек вставляем search который берем из управляемого инпута
-    fetch(
-      `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${currentPage}&limit=4&${
-        categoryId ? `category=${categoryId}` : ``
-      }&sortBy=${
-        sortedTypes[sortId].sortBy
-      }&order=${sortDirection}&search=${search}`
-    )
-      .then((res) => res.json())
-      .then((pizzaArr) => {
-        setPizzas(Array.isArray(pizzaArr) ? pizzaArr : []);
+    // fetch(
+    //   `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${currentPage}&limit=4&${
+    //     categoryId ? `category=${categoryId}` : ``
+    //   }&sortBy=${
+    //     sortedTypes[sortId].sortBy
+    //   }&order=${sortDirection}&search=${search}`
+    // )
+    //   .then((res) => res.json())
+    //   .then((pizzaArr) => {
+    //     setPizzas(Array.isArray(pizzaArr) ? pizzaArr : []);
+    //     setIsLoading(false);
+    //   });
+    axios
+      .get(
+        `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${pageCurrent}&limit=4&${
+          categoryId ? `category=${categoryId}` : ``
+        }&sortBy=${
+          sortedTypes[sortId].sortBy
+        }&order=${sortDirection}&search=${search}`
+      )
+      .then((res) => {
+        setPizzas(res.data);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortId, sortDirection, searchValue, currentPage]);
+  }, [categoryId, sortId, sortDirection, searchValue, pageCurrent]);
 
   const pizzaList = pizzas
     // Вариант для поиска пицц без Бека, через js. Принимаем массив с бека, фильтруем js-ом и отрисовываем
@@ -69,17 +74,24 @@ export default function Home() {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories onClickChangeCategory={onClickChangeCategory} />
+        <Categories
+          categoryId={categoryId}
+          onClickChangeCategory={(state) => dispatch(setCategoryId(state))}
+        />
         <Sort
           sortId={sortId}
           sortDirection={sortDirection}
-          onClickChangeSort={onClickChangeSort}
-          onClickChangeSortDirection={onClickChangeSortDirection}
+          onClickChangeSort={(state) => dispatch(setSortId(state))}
+          onClickChangeSortDirection={(state) =>
+            dispatch(setSortDirection(state))
+          }
         />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzaList}</div>
-      <Pagination changeCurrentPage={(num) => setCurrentPage(num)} />
+      <Pagination
+        onClickChangePagination={(state) => dispatch(setPageCurrent(state))}
+      />
     </div>
   );
 }

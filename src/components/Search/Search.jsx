@@ -1,10 +1,26 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useRef } from "react";
 import cls from "./Search.module.scss";
 import { SearchContext } from "../../App";
+import debounce from "lodash.debounce";
 
 export default function Search() {
   //3.Используем контекст и деструктурируем "пропсы". Аргументом передаём созданный и импортированный контекст
   const { searchValue, setSearchValue } = useContext(SearchContext);
+
+  const onClickClear = () => {
+    setSearchValue("");
+    inputRef.current.focus();
+  };
+
+  const inputRef = useRef();
+
+  const debounsedSearch = useCallback(
+    debounce((str) => {
+      setSearchValue(str);
+    }, 350),
+    [setSearchValue]
+  );
+
   return (
     <div className={cls.container}>
       <img
@@ -13,14 +29,15 @@ export default function Search() {
         alt="Search icon"
       />
       <input
-        value={searchValue}
         className={cls.input}
         placeholder="Начните вводить..."
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) => debounsedSearch(e.target.value)}
+        ref={inputRef}
       ></input>
+
       <img
-        onMouseDown={() => {
-          setSearchValue("");
+        onClick={() => {
+          onClickClear();
         }}
         className={searchValue ? cls.CloseIcon : cls.CloseIconZero}
         src="/close-icon.svg"
