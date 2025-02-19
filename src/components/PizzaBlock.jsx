@@ -48,7 +48,6 @@ export const PizzaBlock = ({ title, price, sizes, types, id }) => {
             setCounter(counter + 1);
             dispatch(setItems({ title, price, activeSize, activeType, id }));
             dispatch(setTotalPrice(price));
-            console.log(items);
           }}
           className="button button--outline button--add"
         >

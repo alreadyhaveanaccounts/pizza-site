@@ -15,7 +15,7 @@ import {
   setPageCurrent,
   setFilters,
 } from "../redux/slices/filterSlice";
-import axios from "axios";
+import { fetchPizzas } from "../redux/slices/pizzaSlice";
 import qs from "qs";
 import { useNavigate } from "react-router";
 
@@ -28,9 +28,9 @@ export default function Home() {
   const { categoryId, sortId, sortDirection, pageCurrent } = useSelector(
     (state) => state.filter
   );
+  const { pizzas, status } = useSelector((state) => state.pizza);
   const { searchValue } = useContext(SearchContext);
-  const [pizzas, setPizzas] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [pizzas, setPizzas] = useState([]);
   const search = searchValue ? searchValue : "";
 
   //этим хуком получаем данные из юрл и диспатчим в редакс, который меняет состояние через экшн setFilters, и при обновлении страницы у нас загружаются старые параметры сортировки/фильтрации и тд. При загрузке страницы Redux берет данные из URL (useEffect с qs.parse).При изменении фильтров Redux обновляет URL (useEffect с navigate).Таким образом, при обновлении страницы фильтры загружаются из URL, а после изменений записываются обратно.
@@ -71,21 +71,18 @@ export default function Home() {
     isMounted.current = true;
   }, [categoryId, sortId, pageCurrent, sortDirection]);
 
-  const fetchPizza = () => {
-    setIsLoading(true);
+  const fetchPizza = async () => {
     // Вариант для поиска пицц через Бек. Сразу в запрос на бек вставляем search который берем из управляемого инпута
-    axios
-      .get(
-        `https://67a201eb409de5ed5253ea27.mockapi.io/items?page=${pageCurrent}&limit=4&${
-          categoryId ? `category=${categoryId}` : ``
-        }&sortBy=${
-          sortedTypes[sortId].sortBy
-        }&order=${sortDirection}&search=${search}`
-      )
-      .then((res) => {
-        setPizzas(res.data);
-        setIsLoading(false);
-      });
+    dispatch(
+      fetchPizzas({
+        pageCurrent,
+        categoryId,
+        sortId,
+        sortedTypes,
+        sortDirection,
+        search,
+      })
+    ).unwrap();
   };
   // Если был первый рендер - то запрашиваем пиццы
   useEffect(() => {
@@ -126,7 +123,18 @@ export default function Home() {
         />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzaList}</div>
+      <div>
+        {status === "rejected" ? (
+          <div className="content__error">
+            <h1>Извините, у нас произошла ошибка</h1>
+            <p>Повторите попытку позже</p>
+          </div>
+        ) : (
+          <div className="content__items">
+            {status === "pending" ? skeletons : pizzaList}
+          </div>
+        )}
+      </div>
       <Pagination
         onClickChangePagination={(state) => dispatch(setPageCurrent(state))}
       />

@@ -22,7 +22,17 @@ body {
   &__title {
     margin: 35px 0;
   }
+  &__error {
+    width: 1000px;
+    text-align: center;
+    height: 350px;
+    margin: 60px;
 
+    p {
+      margin: 20px;
+      font-size: 30px;
+    }
+  }
   &__items {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
