@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 export const sortedTypes = [
   { name: "популярности", sortBy: "rating" },
   { name: "цене", sortBy: "price" },
@@ -11,10 +11,24 @@ export const Sort = ({
   onClickChangeSort,
   onClickChangeSortDirection,
 }) => {
+  const sortRef = useRef();
   const [visible, setVisible] = useState(false);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.composedPath().includes(sortRef.current)) {
+        setVisible(false);
+      }
+    };
+    document.body.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"
