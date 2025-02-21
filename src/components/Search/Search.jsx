@@ -1,22 +1,27 @@
 import React, { useCallback, useContext, useRef } from "react";
 import cls from "./Search.module.scss";
-import { SearchContext } from "../../App";
 import debounce from "lodash.debounce";
+import { useDispatch } from "react-redux";
+import { setSearchValue } from "../../redux/slices/filterSlice";
+import { useSelector } from "react-redux";
 
 export default function Search() {
   //3.Используем контекст и деструктурируем "пропсы". Аргументом передаём созданный и импортированный контекст
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  // const { searchValue, setSearchValue } = useContext(SearchContext);
 
   const onClickClear = () => {
-    setSearchValue("");
+    dispatch(setSearchValue(""));
     inputRef.current.focus();
   };
+  const { searchValue } = useSelector((state) => state.filter);
+
+  const dispatch = useDispatch();
 
   const inputRef = useRef();
 
   const debounsedSearch = useCallback(
     debounce((str) => {
-      setSearchValue(str);
+      dispatch(setSearchValue(str));
     }, 350),
     [setSearchValue]
   );

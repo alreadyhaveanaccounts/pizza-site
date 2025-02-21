@@ -4,10 +4,11 @@ import { Link } from "react-router";
 import { clearItems } from "../redux/slices/cartSlice";
 import PizzaCart from "../components/PizzaCart";
 import EmptyCart from "../components/EmptyCart";
+import { selectCart } from "../redux/slices/pizzaSlice";
 
 export default function Cart() {
   const dispatch = useDispatch();
-  const { items, totalPrice } = useSelector((state) => state.cart);
+  const { items, totalPrice } = useSelector(selectCart);
 
   return (
     <div>

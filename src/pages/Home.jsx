@@ -6,7 +6,7 @@ import { PizzaBlock } from "../components/PizzaBlock";
 import Skeleton from "../components/Skeleton";
 import { sortedTypes } from "../components/Sort";
 import Pagination from "../components/Pagination/Pagination";
-import { SearchContext } from "../App";
+// import { SearchContext } from "../App";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setCategoryId,
@@ -21,6 +21,7 @@ import { useNavigate } from "react-router";
 
 export default function Home() {
   const dispatch = useDispatch();
+  const { searchValue } = useSelector((state) => state.filter);
   const navigate = useNavigate();
   const isSearch = useRef(false);
   const isMounted = useRef(false);
@@ -29,7 +30,7 @@ export default function Home() {
     (state) => state.filter
   );
   const { pizzas, status } = useSelector((state) => state.pizza);
-  const { searchValue } = useContext(SearchContext);
+  // const { searchValue } = useContext(SearchContext);
   // const [pizzas, setPizzas] = useState([]);
   const search = searchValue ? searchValue : "";
 
@@ -52,6 +53,7 @@ export default function Home() {
           ...params,
         })
       );
+      fetchPizza();
       isSearch.current = true;
     }
   }, []);
@@ -91,7 +93,14 @@ export default function Home() {
       fetchPizza();
     }
     isSearch.current = false;
-  }, [categoryId, sortId, sortDirection, searchValue, pageCurrent]);
+  }, [
+    categoryId,
+    sortId,
+    sortDirection,
+    searchValue,
+    pageCurrent,
+    searchValue,
+  ]);
 
   const pizzaList = pizzas
     // Вариант для поиска пицц без Бека, через js. Принимаем массив с бека, фильтруем js-ом и отрисовываем

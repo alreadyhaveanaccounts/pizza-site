@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setItems, setTotalPrice } from "../redux/slices/cartSlice";
+import { selectCartPrice } from "../redux/slices/pizzaSlice";
 export const PizzaBlock = ({ title, price, sizes, types, id }) => {
-  const items = useSelector((state) => state.cart.items);
+  const items = useSelector(selectCartPrice);
   const [counter, setCounter] = useState(0);
   const [activeSize, setActiveSize] = useState(sizes[0]);
   const [activeType, setActiveType] = useState(types[0]);

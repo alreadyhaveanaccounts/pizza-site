@@ -1,9 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { plusPizza, minusPizza, deletePizza } from "../redux/slices/cartSlice";
+import { selectCart } from "../redux/slices/pizzaSlice";
 
 export default function PizzaCart() {
-  const { items } = useSelector((state) => state.cart);
+  const { items } = useSelector(selectCart);
   const dispatch = useDispatch();
   return (
     <div className="content__items">
