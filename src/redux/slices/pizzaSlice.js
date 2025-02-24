@@ -14,8 +14,6 @@ const fetchPizzas = createAsyncThunk(
         sortedTypes[sortId].sortBy
       }&order=${sortDirection}&search=${search}`
     );
-    console.log(thunkAPI.getState());
-
     return data;
   }
 );

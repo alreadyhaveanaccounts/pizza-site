@@ -9,7 +9,7 @@ import { selectCart } from "../redux/slices/pizzaSlice";
 export default function Cart() {
   const dispatch = useDispatch();
   const { items, totalPrice } = useSelector(selectCart);
-
+  const totalAmount = items.reduce((sum, item) => sum + item.count, 0);
   return (
     <div>
       {" "}
@@ -97,7 +97,7 @@ export default function Cart() {
               <div className="cart__bottom-details">
                 <span>
                   {" "}
-                  Всего пицц: <b>{items.length} шт.</b>{" "}
+                  Всего пицц: <b>{totalAmount} шт.</b>{" "}
                 </span>
                 <span>
                   {" "}

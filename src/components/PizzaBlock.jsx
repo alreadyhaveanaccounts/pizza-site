@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setItems, setTotalPrice } from "../redux/slices/cartSlice";
-import { selectCartPrice } from "../redux/slices/pizzaSlice";
+import { Link } from "react-router";
+import { useEffect } from "react";
+
 export const PizzaBlock = ({ title, price, sizes, types, id }) => {
-  const items = useSelector(selectCartPrice);
   const [counter, setCounter] = useState(0);
   const [activeSize, setActiveSize] = useState(sizes[0]);
   const [activeType, setActiveType] = useState(types[0]);
   const pizzaTypes = ["обычное", "традиционное"];
   const dispatch = useDispatch();
-
   return (
     <div className="pizza-block">
-      <img
-        className="pizza-block__image"
-        src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
-        alt="Pizza"
-      />
+      <Link to={`/pizza/${id}`}>
+        {" "}
+        <img
+          className="pizza-block__image"
+          src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
+          alt="Pizza"
+        />
+      </Link>
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>

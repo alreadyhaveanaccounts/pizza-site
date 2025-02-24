@@ -6,9 +6,6 @@ import { setSearchValue } from "../../redux/slices/filterSlice";
 import { useSelector } from "react-redux";
 
 export default function Search() {
-  //3.Используем контекст и деструктурируем "пропсы". Аргументом передаём созданный и импортированный контекст
-  // const { searchValue, setSearchValue } = useContext(SearchContext);
-
   const onClickClear = () => {
     dispatch(setSearchValue(""));
     inputRef.current.focus();

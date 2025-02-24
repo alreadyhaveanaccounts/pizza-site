@@ -33,17 +33,25 @@ const cartSlice = createSlice({
       const findItem = state.items.find((obj) => obj.id === action.payload.id);
       if (findItem) {
         findItem.count++;
+        state.totalPrice += findItem.price;
       }
+      state.totalCount += 1;
+      console.log(state.totalCount, state.items.length);
     },
     minusPizza(state, action) {
       const findItem = state.items.find((obj) => obj.id === action.payload.id);
+
       if (findItem && findItem.count > 1) {
+        console.log(state.items);
         findItem.count--;
       } else {
         state.items = state.items.filter(
           (item) => item.id !== action.payload.id
         );
       }
+      state.totalPrice -= findItem.price;
+      state.totalCount -= 1;
+      console.log(state.totalCount, state.items.length);
     },
   },
 });

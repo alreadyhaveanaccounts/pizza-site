@@ -30,8 +30,6 @@ export default function Home() {
     (state) => state.filter
   );
   const { pizzas, status } = useSelector((state) => state.pizza);
-  // const { searchValue } = useContext(SearchContext);
-  // const [pizzas, setPizzas] = useState([]);
   const search = searchValue ? searchValue : "";
 
   //этим хуком получаем данные из юрл и диспатчим в редакс, который меняет состояние через экшн setFilters, и при обновлении страницы у нас загружаются старые параметры сортировки/фильтрации и тд. При загрузке страницы Redux берет данные из URL (useEffect с qs.parse).При изменении фильтров Redux обновляет URL (useEffect с navigate).Таким образом, при обновлении страницы фильтры загружаются из URL, а после изменений записываются обратно.
